@@ -10,6 +10,7 @@ from chinese_calendar import is_workday
 import numpy as np
 from get_stocks import get_ins148_north50_data, get_hs300_zz500_data
 from tqdm import tqdm
+import os
 
 np.set_printoptions(precision=3, suppress=True)
 
@@ -89,11 +90,14 @@ if __name__ == '__main__':
     print('login respond  error_msg:'+lg.error_msg)
 
     twentyone_days_ago, now = days_of_twentyone(datetime.datetime.now())
-    stocks_result = get_hs300_zz500_data()  # get_hs300_zz500_data(), get_ins148_north50_data()
 
-    # bonds_code = ["000625", "002739"]
+    if not os.path.exists(now):
+        os.makedirs(now)
+
+    # 机构重仓 + 北上50 + 隐形冠军 + 自选
+    stocks_result = get_ins148_north50_data() # get_hs300_zz500_data(), get_ins148_north50_data()
     bonds_code = stocks_result['code']
-    f = open('buy_{}.txt'.format(now), 'w')
+    f = open(os.path.join(now, '精选-buy-{}.txt'.format(now)), 'w')
 
     for i in tqdm(range(len(bonds_code)), ncols=80):
         data = get_hist_data(bonds_code[i], start=twentyone_days_ago, end=now)
@@ -105,8 +109,26 @@ if __name__ == '__main__':
                 "今20日均线:", np.around(mean_info[1], decimals=2),
                 "昨5日均线:", np.around(mean_info[2], decimals=2),
                 "昨20日均线:", np.around(mean_info[3], decimals=2),
-                file=f)
-            
+                file=f)  
+    f.close()
+
+    # hs300 + zz500
+    stocks_result = get_hs300_zz500_data() # get_hs300_zz500_data(), get_ins148_north50_data()
+    # bonds_code = ["000625", "002739"]
+    bonds_code = stocks_result['code']
+    f = open(os.path.join(now, 'hs300-zz500-buy-{}.txt'.format(now)), 'w')
+
+    for i in tqdm(range(len(bonds_code)), ncols=80):
+        data = get_hist_data(bonds_code[i], start=twentyone_days_ago, end=now)
+        is_buy_point, mean_info, _ = buy_point_info(data)
+        if is_buy_point:
+            print(bonds_code[i], stocks_result["code_name"][i],
+                "今收:", data['close'].astype('float').values.tolist()[-1],
+                "今5日均线:", np.around(mean_info[0], decimals=2),
+                "今20日均线:", np.around(mean_info[1], decimals=2),
+                "昨5日均线:", np.around(mean_info[2], decimals=2),
+                "昨20日均线:", np.around(mean_info[3], decimals=2),
+                file=f) 
     f.close()
 
     #### 登出系统 ####
