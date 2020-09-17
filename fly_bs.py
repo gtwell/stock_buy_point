@@ -45,18 +45,10 @@ def buy_point_info(data):
     yest2_five_mean = np.mean(close_data[-8:-3])
     yest2_twenty_mean = np.mean(close_data[-23:-3])
 
-    yest3_five_mean = np.mean(close_data[-9:-4])
-    yest3_twenty_mean = np.mean(close_data[-24:-4])
-
-    yest4_five_mean = np.mean(close_data[-10:-5])
-    yest4_twenty_mean = np.mean(close_data[-25:-5])
-
-    if ((today_five_mean / today_twenty_mean) > 1.001) and \
+    if ((today_five_mean / today_twenty_mean) > 1.000) and \
         ((yest0_five_mean / yest0_twenty_mean) < 0.999) and \
-        ((yest1_five_mean / yest1_twenty_mean) < 0.999) and \
-        ((yest2_five_mean / yest2_twenty_mean) < 0.999) and \
-        ((yest3_five_mean / yest3_twenty_mean) < 0.999) and \
-        ((yest4_five_mean / yest4_twenty_mean) < 0.999):
+        ((yest1_five_mean / yest1_twenty_mean) < 0.998) and \
+        ((yest2_five_mean / yest2_twenty_mean) < 0.997):
         buy_point = True
 
     if (today_five_mean < today_twenty_mean):

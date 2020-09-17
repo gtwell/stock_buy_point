@@ -47,8 +47,8 @@ North50 = ['牧原股份', '顺丰控股', '韦尔股份', '潍柴动力', '三�
 ZiXuan = ['美年健康', '美亚光电', '大华股份', '宝信软件', '中科创达', '福耀玻璃', '中信建投', '上海新阳', '苏州固锝', '老板电器',
           '上海贝岭', '伟明环保', '鹏鼎控股', '中国太保', '珠江啤酒', '上峰水泥', '宏发股份', '德赛西威', '涪陵榨菜', '光线传媒',
           '中航高科', '捷捷微电', '恩捷股份', '通富微电', '三只松鼠', '良品铺子', '中国长城', '南大光电', '得润电子', '安洁科技',
-          '紫光国微', '联美控股', '重庆啤酒', '福成股份', '超图软件', 'TCL科技', '士兰微', '中科软', '新洋丰', '福莱特', '同花顺',
-          '科沃斯', '白云山']
+          '晶盛机电',
+          '紫光国微', '联美控股', '重庆啤酒', '福成股份', '超图软件', '士兰微', '中科软', '新洋丰', '福莱特', '同花顺', '科沃斯', '白云山']
 
 Champion = ['贝瑞基因', '迪安诊断', '阳光电源', '顺网科技', '密尔克卫', '富邦股份', '金城医药', '广州酒家', '博实股份', '巨星科技',
             '安车检测', '杭叉集团', '智莱科技', '杭锅股份', '雪榕生物', '华宏科技', '苏试试验', '飞荣达', '爱柯迪', '溢多利', '康力电梯',
@@ -60,7 +60,7 @@ Ins148_North50 = list(set(Institutions150_0 + Institutions150_1 + North50 + Cham
 
 def get_all_data():
     # 获取沪深300和中证500成分股
-    rs_all = bs.query_all_stock(day="2020-06-30")
+    rs_all = bs.query_all_stock(day="2020-07-30")
     print('query_all error_code:' + rs_all.error_code)
     print('query_all  error_msg:' + rs_all.error_msg)
 
@@ -77,7 +77,7 @@ def get_all_data():
 
 def get_ins148_north50_data():
     # 获取沪深300和中证500成分股
-    rs_all = bs.query_all_stock("2020-06-30")
+    rs_all = bs.query_all_stock("2020-07-30")
     print('query_all error_code:' + rs_all.error_code)
     print('query_all  error_msg:' + rs_all.error_msg)
 
@@ -97,8 +97,8 @@ def get_ins148_north50_data():
 # 沪深300 + 中证500
 def get_hs300_zz500_data():
     # 获取沪深300和中证500成分股
-    rs_hs300 = bs.query_hs300_stocks()
-    rs_zz500 = bs.query_zz500_stocks()
+    rs_hs300 = bs.query_hs300_stocks("2020-07-30")
+    rs_zz500 = bs.query_zz500_stocks("2020-07-30")
     print('query_hs300 error_code:' + rs_hs300.error_code)
     print('query_hs300  error_msg:' + rs_hs300.error_msg)
     print('query_zz500 error_code:' + rs_zz500.error_code)
@@ -126,8 +126,9 @@ if __name__ == '__main__':
     print('login respond error_code:'+lg.error_code)
     print('login respond  error_msg:'+lg.error_msg)
 
-    # data = get_ins148_north50_data()
+    # data = get_hs300_zz500_data()
     # print(data)
+
     data = pd.read_csv("./stocks-pool/all_stocks.csv", encoding='gbk')
     # print(data['code_name'].values.tolist())
     for i in Institutions150_1:
@@ -136,3 +137,4 @@ if __name__ == '__main__':
 
     #### 登出系统 ####
     bs.logout()
+
