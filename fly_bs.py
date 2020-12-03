@@ -1,7 +1,7 @@
 '''
 Author: gtwell
 Date: 2020-08-13 17:09:01
-LastEditTime: 2020-10-31 16:40:19
+LastEditTime: 2020-12-03 23:09:08
 '''
 import baostock as bs
 import pandas as pd
@@ -11,6 +11,7 @@ import numpy as np
 from get_stocks import get_better_stocks, get_hs300_zz500_data
 from tqdm import tqdm
 import os
+import yagmail
 
 np.set_printoptions(precision=3, suppress=True)
 
@@ -75,6 +76,9 @@ def get_hist_data(code, start, end):
     return rs_stock_info_result
 
 if __name__ == '__main__':
+    # 正文
+    contents = ''
+
     #### 登陆系统 ####
     lg = bs.login()
     # 显示登陆返回信息
@@ -96,7 +100,9 @@ if __name__ == '__main__':
         is_buy_point, mean_info, _ = buy_point_info(data)
         close_data = data['close'].astype('float').values.tolist()[-1] # 当日收盘价
         if is_buy_point and close_data < 200:
-            print(bonds_code[i], stocks_result["code_name"][i], "收盘价:", close_data, file=f)          
+            print(bonds_code[i], stocks_result["code_name"][i], "收盘价:", close_data, file=f)
+            # 邮件正文
+            contents += (bonds_code[i] + " " + stocks_result["code_name"][i] + " " + "收盘价: " + str(close_data) + "\n")      
         # if is_buy_point:
         #     print(np.mean(data['close'][-20:].astype('float').values))
         #     print(bonds_code[i], stocks_result["code_name"][i],
@@ -124,6 +130,16 @@ if __name__ == '__main__':
 
     #### 登出系统 ####
     bs.logout()
+
+    # 是否将最后结果发送到邮件
+    send_email = True
+    if send_email:
+        # 连接邮箱服务器
+        mail = yagmail.SMTP(user='xxxx@163.com', password="xxxxx", host='smtp.163.com')
+        # 收件人(如果多个收件人的话，写成list就行了，如果只是一个账号，就直接写字符串就行to='123@qq.com')
+        to = 'xxx@qq.com'
+        mail.send(to=to, subject='精选-buy-{}'.format(now), contents=contents)
+        mail.close()
 
 
 # if __name__ == '__main__':
